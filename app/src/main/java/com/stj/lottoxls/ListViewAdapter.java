@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/*TODO*/
+//당첨된 숫자가 출력되는 ListView를 커스텀하여 만들기 위한 adapter
+
 public class ListViewAdapter extends BaseAdapter
 {
     private ArrayList<ListViewItem> mItems = new ArrayList<>();
@@ -43,13 +46,6 @@ public class ListViewAdapter extends BaseAdapter
             convertView = inflater.inflate(R.layout.listviewitem_lotto, parent, false);
         }
 
-        /*
-        ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-
-        layoutParams.height = 100;
-
-        convertView.setLayoutParams(layoutParams);
-*/
         TextView tvGetContents = convertView.findViewById(R.id.item_tv_contents);
         TextView tvGetNum1 = convertView.findViewById(R.id.item_tv_num1);
         TextView tvGetNum2 = convertView.findViewById(R.id.item_tv_num2);

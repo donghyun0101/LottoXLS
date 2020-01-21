@@ -1,5 +1,8 @@
 package com.stj.lottoxls;
 
+/*TODO*/
+//당첨된 숫자가 출력되는 ListView를 커스텀하여 만들기 위한 adapter에 들어가는 Item List
+
 public class ListViewItem
 {
     private String contents;

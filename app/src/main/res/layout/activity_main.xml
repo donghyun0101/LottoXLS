@@ -17,7 +17,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+<!-- 아래 카드뷰 집합은 엑셀 가져오기 버튼이 있음
             <androidx.cardview.widget.CardView
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -39,7 +41,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackground"
-                        android:text="엑셀 파일 가져오기"
+                        android:text="엑셀 파일 읽기"
                         android:textSize="15sp" />
 
                     <View
@@ -71,7 +73,7 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
+-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
