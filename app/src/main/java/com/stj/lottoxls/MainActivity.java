@@ -1,31 +1,19 @@
 package com.stj.lottoxls;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,14 +23,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -60,6 +42,13 @@ public class MainActivity extends AppCompatActivity
 
     private ListView listViewLotto; //당첨된 회차를 뿌려주기 위한 리스트뷰
     private ListViewAdapter adapter; //리스트뷰에 들어가는 정보는 단일이 아니라 회차, 숫자여섯개 이므로 리스트뷰 아이템을 커스텀해서 보여줘야하기 때문에 adapter를 따로 제작
+
+    //2020-03-11 추가. 로또 이미지 표시
+    private ImageView[] imgLotto;
+    private ImageView[] imgGetLotto;
+    private int[] imgIdArray = {R.id.img_lo1, R.id.img_lo2, R.id.img_lo3, R.id.img_lo4, R.id.img_lo5, R.id.img_lo6};
+    private int[] imgGetIdArray = {R.id.img_get_lo1, R.id.img_get_lo2, R.id.img_get_lo3, R.id.img_get_lo4, R.id.img_get_lo5, R.id.img_get_lo6};
+    private TextView tvCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -438,6 +427,51 @@ public class MainActivity extends AppCompatActivity
                 //그리고 cnt 변수는 해당 AsyncTask의 지역변수로 초기에 0으로 초기화되기 때문에 굳이 초기화 작업이 필요없음.
                 for (allCnt = 0; allCnt < cnt; allCnt++)
                     adapter.addItem(result[allCnt][0], result[allCnt][1], result[allCnt][2], result[allCnt][3], result[allCnt][4], result[allCnt][5], result[allCnt][6]);
+
+                //2020-03-11 추가
+                final AlertDialog.Builder dialogLotto = new AlertDialog.Builder(MainActivity.this);
+
+                LayoutInflater inflater = getLayoutInflater();
+                final View dialogView = inflater.inflate(R.layout.dialog_lottoball, null);
+
+                int[] imgs = new int[46]; //로또 이미지 배열저장
+                imgLotto = new ImageView[6]; //당첨회차 배열 저장
+                imgGetLotto = new ImageView[6]; //작성번호 배열 저장
+
+                tvCount = dialogView.findViewById(R.id.tv_count);
+
+                for (int i = 1; i <= 45; i++)
+                {
+                    imgs[i] = getApplicationContext().getResources().getIdentifier("lottoball" + i, "drawable", "com.stj.lottoxls");
+                    //배열로 로또이미지를 int 형태로 저장
+                }
+
+                for (int i = 0; i < 6; i++)
+                {
+                    imgLotto[i] = dialogView.findViewById(imgIdArray[i]); //변수를 id값으로 선언
+                    imgGetLotto[i] = dialogView.findViewById(imgGetIdArray[i]); //변수를 id값으로 선언
+                }
+
+                for (int i = 0; i < 6; i++)
+                {
+                    imgLotto[i].setImageResource(imgs[Integer.parseInt(result[0][i + 1])]); //당첨 회차를 불러와서 해당 String을 int로 변환 후 배열값에 넣고 로또이미지 불러오기
+                    imgGetLotto[i].setImageResource(imgs[Integer.parseInt(edNum[i].getText().toString())]); //작성 회차를 불러와서 해당 String을 int로 변환 후 배열값에 넣고 로또이미지 불러오기
+                }
+
+                tvCount.setText(result[0][0]); //회차 정보 표기
+
+                dialogLotto.setPositiveButton("확인", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                dialogLotto.setView(dialogView);
+                dialogLotto.setCancelable(false);
+                dialogLotto.create();
+                dialogLotto.show();
 
                 //리스트뷰 새로고침
                 adapter.notifyDataSetChanged();
